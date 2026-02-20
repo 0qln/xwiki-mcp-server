@@ -1,79 +1,79 @@
 # XWiki MCP Server
 
-Servidor MCP (Model Context Protocol) para interactuar con instancias de XWiki. Este servidor permite buscar, leer y crear páginas en XWiki a través de la API REST.
+MCP (Model Context Protocol) server for interacting with XWiki instances. This server allows you to search, read, and create pages in XWiki through the REST API.
 
-## 🚀 Características
+## 🚀 Features
 
-- **Búsqueda de artículos**: Busca páginas en XWiki usando la API de búsqueda
-- **Lectura de páginas**: Obtiene el contenido completo de cualquier página de XWiki
-- **Creación/Actualización de páginas**: Crea o actualiza páginas en XWiki usando sintaxis XWiki
+- **Article Search**: Search pages in XWiki using the search API
+- **Page Reading**: Get the full content of any XWiki page
+- **Page Creation/Update**: Create or update pages in XWiki using XWiki syntax
 
-## 📋 Requisitos Previos
+## 📋 Prerequisites
 
-- Docker y Docker Compose instalados
-- Node.js 20+ (si ejecutas sin Docker)
-- Acceso a una instancia de XWiki con API REST habilitada
+- Docker and Docker Compose installed
+- Node.js 20+ (if running without Docker)
+- Access to an XWiki instance with REST API enabled
 
-## 🔧 Instalación
+## 🔧 Installation
 
-### Opción 1: Usando Docker (Recomendado)
+### Option 1: Using Docker (Recommended)
 
-1. Clona el repositorio:
+1. Clone the repository:
 ```bash
 git clone https://github.com/alfredfs85/xwiki-mcp-server.git
 cd xwiki-mcp-server
 ```
 
-2. Configura las variables de entorno creando un archivo `.env`:
+2. Configure environment variables by creating a `.env` file:
 ```bash
-XWIKI_URL=https://tu-instancia-xwiki.com
-XWIKI_USERNAME=tu_usuario
-XWIKI_PASSWORD=tu_contraseña
+XWIKI_URL=https://your-xwiki-instance.com
+XWIKI_USERNAME=your_username
+XWIKI_PASSWORD=your_password
 XWIKI_WIKI=xwiki
 ```
 
-3. Construye y ejecuta el contenedor:
+3. Build and run the container:
 ```bash
 docker-compose up -d --build
 ```
 
-4. Verifica que el servidor esté funcionando:
+4. Verify the server is running:
 ```bash
 curl http://localhost:3000/health
 ```
 
-### Opción 2: Ejecución Local
+### Option 2: Local Execution
 
-1. Instala las dependencias:
+1. Install dependencies:
 ```bash
 npm install
 ```
 
-2. Configura las variables de entorno:
+2. Configure environment variables:
 ```bash
-export XWIKI_URL=https://tu-instancia-xwiki.com
-export XWIKI_USERNAME=tu_usuario
-export XWIKI_PASSWORD=tu_contraseña
+export XWIKI_URL=https://your-xwiki-instance.com
+export XWIKI_USERNAME=your_username
+export XWIKI_PASSWORD=your_password
 export XWIKI_WIKI=xwiki
 ```
 
-3. Ejecuta el servidor:
+3. Run the server:
 ```bash
 node server.js
 ```
 
-El servidor estará disponible en `http://localhost:3000`
+The server will be available at `http://localhost:3000`
 
-## 🔐 Configuración con SSL (Opcional)
+## 🔐 SSL Configuration (Optional)
 
-Si necesitas HTTPS, puedes usar el script `setup.sh` para generar certificados SSL autofirmados:
+If you need HTTPS, you can use the `setup.sh` script to generate self-signed SSL certificates:
 
 ```bash
 chmod +x setup.sh
-./setup.sh
+./setup.sh --ssl
 ```
 
-**Nota**: Los certificados generados (`server.key` y `server.crt`) están en `.gitignore` y no se subirán al repositorio.
+**Note**: Generated certificates (`server.key` and `server.crt`) are in `.gitignore` and will not be uploaded to the repository.
 
 ## 📡 Endpoints
 
@@ -81,38 +81,38 @@ chmod +x setup.sh
 ```
 GET /health
 ```
-Retorna el estado del servidor y la configuración de XWiki.
+Returns the server status and XWiki configuration.
 
 ### MCP JSON-RPC
 ```
 POST /mcp
 ```
-Endpoint principal para comunicación MCP usando JSON-RPC 2.0.
+Main endpoint for MCP communication using JSON-RPC 2.0.
 
 ### Server-Sent Events (SSE)
 ```
 GET /sse
 POST /messages?sessionId={sessionId}
 ```
-Endpoints alternativos para comunicación mediante Server-Sent Events.
+Alternative endpoints for communication via Server-Sent Events.
 
-## 🛠️ Herramientas Disponibles
+## 🛠️ Available Tools
 
 ### `search_xwiki`
-Busca artículos en XWiki.
+Searches for articles in XWiki.
 
-**Parámetros:**
-- `query` (requerido): Término de búsqueda
-- `limit` (opcional): Número máximo de resultados (default: 10)
+**Parameters:**
+- `query` (required): Search term
+- `limit` (optional): Maximum number of results (default: 10)
 
-**Ejemplo:**
+**Example:**
 ```json
 {
   "method": "tools/call",
   "params": {
     "name": "search_xwiki",
     "arguments": {
-      "query": "documentación",
+      "query": "documentation",
       "limit": 5
     }
   }
@@ -120,12 +120,12 @@ Busca artículos en XWiki.
 ```
 
 ### `get_xwiki_page`
-Obtiene el contenido de una página de XWiki.
+Gets the content of an XWiki page.
 
-**Parámetros:**
-- `page_path` (requerido): Ruta de la página (ej: `Main.WebHome` o `Space.Page`)
+**Parameters:**
+- `page_path` (required): Page path (e.g., `Main.WebHome` or `Space.Page`)
 
-**Ejemplo:**
+**Example:**
 ```json
 {
   "method": "tools/call",
@@ -139,14 +139,14 @@ Obtiene el contenido de una página de XWiki.
 ```
 
 ### `create_xwiki_page`
-Crea o actualiza una página en XWiki.
+Creates or updates a page in XWiki.
 
-**Parámetros:**
-- `page_path` (requerido): Ruta de la página
-- `title` (requerido): Título de la página
-- `content` (requerido): Contenido en sintaxis XWiki
+**Parameters:**
+- `page_path` (required): Page path
+- `title` (required): Page title
+- `content` (required): Content in XWiki syntax
 
-**Ejemplo:**
+**Example:**
 ```json
 {
   "method": "tools/call",
@@ -154,16 +154,16 @@ Crea o actualiza una página en XWiki.
     "name": "create_xwiki_page",
     "arguments": {
       "page_path": "Test.MyPage",
-      "title": "Mi Página de Prueba",
-      "content": "= Título =\n\nContenido de la página..."
+      "title": "My Test Page",
+      "content": "= Title =\n\nPage content..."
     }
   }
 }
 ```
 
-## 🔌 Integración con Cursor/Claude Desktop
+## 🔌 Integration with Cursor/Claude Desktop
 
-Para usar este servidor MCP con Cursor o Claude Desktop, agrega la siguiente configuración a tu archivo de configuración MCP:
+To use this MCP server with Cursor or Claude Desktop, add the following configuration to your MCP configuration file:
 
 ```json
 {
@@ -176,50 +176,50 @@ Para usar este servidor MCP con Cursor o Claude Desktop, agrega la siguiente con
 }
 ```
 
-## 🐳 Variables de Entorno
+## 🐳 Environment Variables
 
-| Variable | Descripción | Default |
+| Variable | Description | Default |
 |----------|-------------|---------|
-| `PORT` | Puerto del servidor | `3000` |
-| `XWIKI_URL` | URL de tu instancia XWiki | - |
-| `XWIKI_USERNAME` | Usuario para autenticación | - |
-| `XWIKI_PASSWORD` | Contraseña para autenticación | - |
-| `XWIKI_WIKI` | Nombre del wiki | `xwiki` |
-| `MCP_MODE` | Modo de operación MCP | `http` |
-| `NODE_TLS_REJECT_UNAUTHORIZED` | Deshabilitar validación SSL (solo desarrollo) | `0` |
+| `PORT` | Server port | `3000` |
+| `XWIKI_URL` | Your XWiki instance URL | - |
+| `XWIKI_USERNAME` | Username for authentication | - |
+| `XWIKI_PASSWORD` | Password for authentication | - |
+| `XWIKI_WIKI` | Wiki name | `xwiki` |
+| `MCP_MODE` | MCP operation mode | `http` |
+| `NODE_TLS_REJECT_UNAUTHORIZED` | Disable SSL validation (development only) | `0` |
 
-## 📝 Notas de Seguridad
+## 📝 Security Notes
 
-- ⚠️ **Nunca** subas credenciales al repositorio
-- ⚠️ Los certificados SSL autofirmados son solo para desarrollo
-- ⚠️ En producción, usa certificados válidos y configura `NODE_TLS_REJECT_UNAUTHORIZED=1`
-- ⚠️ El archivo `.env` está en `.gitignore` por seguridad
+- ⚠️ **Never** commit credentials to the repository
+- ⚠️ Self-signed SSL certificates are for development only
+- ⚠️ In production, use valid certificates and set `NODE_TLS_REJECT_UNAUTHORIZED=1`
+- ⚠️ The `.env` file is in `.gitignore` for security
 
-## 🤝 Contribuciones
+## 🤝 Contributing
 
-Las contribuciones son bienvenidas. Por favor:
+Contributions are welcome. Please:
 
-1. Haz un fork del proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
+1. Fork the project
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-## 📄 Licencia
+## 📄 License
 
-Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
+This project is licensed under the MIT License. See the `LICENSE` file for more details.
 
-## 🐛 Reportar Problemas
+## 🐛 Reporting Issues
 
-Si encuentras algún problema, por favor abre un issue en el repositorio de GitHub.
+If you encounter any issues, please open an issue on the GitHub repository.
 
-## 👤 Autor
+## 👤 Author
 
 **alfredfs85**
 
 - GitHub: [@alfredfs85](https://github.com/alfredfs85)
 
-## 🙏 Agradecimientos
+## 🙏 Acknowledgments
 
-- XWiki por su excelente plataforma y API REST
-- El equipo de Model Context Protocol por el estándar MCP
+- XWiki for their excellent platform and REST API
+- The Model Context Protocol team for the MCP standard

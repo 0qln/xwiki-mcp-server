@@ -1,59 +1,59 @@
 #!/bin/bash
-# Script de configuración para XWiki MCP Server
-# Genera certificados SSL (opcional) y levanta el contenedor
+# Setup script for XWiki MCP Server
+# Generates SSL certificates (optional) and starts the container
 
 set -e
 
-echo "🚀 Configurando XWiki MCP Server..."
+echo "🚀 Setting up XWiki MCP Server..."
 
-# Verificar si Docker está instalado
+# Check if Docker is installed
 if ! command -v docker &> /dev/null; then
-    echo "❌ Error: Docker no está instalado"
+    echo "❌ Error: Docker is not installed"
     exit 1
 fi
 
-# Verificar si Docker Compose está instalado
+# Check if Docker Compose is installed
 if ! command -v docker-compose &> /dev/null && ! docker compose version &> /dev/null; then
-    echo "❌ Error: Docker Compose no está instalado"
+    echo "❌ Error: Docker Compose is not installed"
     exit 1
 fi
 
-# Opción para generar certificados SSL
+# Option to generate SSL certificates
 if [ "$1" == "--ssl" ]; then
-    echo "📜 Generando certificados SSL..."
+    echo "📜 Generating SSL certificates..."
     if ! command -v openssl &> /dev/null; then
-        echo "⚠️  Advertencia: OpenSSL no está instalado. Saltando generación de certificados."
+        echo "⚠️  Warning: OpenSSL is not installed. Skipping certificate generation."
     else
         openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
             -keyout server.key -out server.crt \
             -subj "/CN=mcp-xwiki/O=MCP/C=US" 2>/dev/null
-        echo "✅ Certificados SSL generados"
+        echo "✅ SSL certificates generated"
     fi
 fi
 
-echo "🐳 Construyendo y levantando contenedor..."
+echo "🐳 Building and starting container..."
 if docker compose version &> /dev/null; then
     docker compose up -d --build
 else
     docker-compose up -d --build
 fi
 
-echo "⏳ Esperando a que el servidor esté listo..."
+echo "⏳ Waiting for server to be ready..."
 sleep 5
 
-# Verificar salud del servidor
-echo "🔍 Verificando estado del servidor..."
+# Check server health
+echo "🔍 Verifying server status..."
 if command -v curl &> /dev/null; then
     if curl -sf http://localhost:3000/health > /dev/null 2>&1; then
-        echo "✅ Servidor funcionando correctamente"
+        echo "✅ Server is running correctly"
         curl -s http://localhost:3000/health | grep -o '"status":"[^"]*"' || echo ""
     else
-        echo "⚠️  No se pudo verificar el estado del servidor"
+        echo "⚠️  Could not verify server status"
     fi
 else
-    echo "⚠️  curl no está instalado. No se puede verificar el estado."
+    echo "⚠️  curl is not installed. Cannot verify status."
 fi
 
 echo ""
-echo "✅ XWiki MCP Server está disponible en http://localhost:3000"
-echo "📖 Para más información, consulta el README.md"
+echo "✅ XWiki MCP Server is available at http://localhost:3000"
+echo "📖 For more information, see README.md"
