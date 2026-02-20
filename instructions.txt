@@ -1,5 +1,0 @@
-cd mcp-xwiki
-
-chmod +x setup.sh
-
-./setup.sh

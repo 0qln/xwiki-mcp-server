@@ -1,4 +1,5 @@
 import express from "express";
+import crypto from "crypto";
 
 const DEFAULT_XWIKI_URL = process.env.XWIKI_URL || "";
 const DEFAULT_USERNAME = process.env.XWIKI_USERNAME || "";
@@ -59,7 +60,7 @@ const pageUrl = `${baseUrl}/rest/wikis/${DEFAULT_WIKI}/spaces/${spacePath}/pages
   }
 }
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
 const app = express();
 app.use(express.json());
 
@@ -144,7 +145,11 @@ app.post("/messages", async (req, res) => {
   res.status(202).end();
 });
 
-app.get("/health", (req, res) => res.json({ status: "ok", xwiki: DEFAULT_XWIKI_URL, sessions: sessions.size }));
+app.get("/health", (req, res) => res.json({ 
+  status: "ok", 
+  xwiki: DEFAULT_XWIKI_URL ? "configured" : "not configured", 
+  sessions: sessions.size 
+}));
 
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`MCP XWiki on http://0.0.0.0:${PORT}`);
