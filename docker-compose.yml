@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  mcp-xwiki:
+    build: .
+    container_name: mcp-xwiki
+    environment:
+      - PORT=3001
+      - MCP_MODE=http
+      - XWIKI_URL=
+      - XWIKI_USERNAME=
+      - XWIKI_PASSWORD=
+      - XWIKI_WIKI=xwiki
+      - NODE_TLS_REJECT_UNAUTHORIZED=0
+    restart: unless-stopped
+    networks:
+      - wordpress_wp_network
+
+networks:
+  wordpress_wp_network:
+    external: true
+
